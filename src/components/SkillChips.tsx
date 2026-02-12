@@ -124,7 +124,8 @@ export function SkillsBar({ pack, selectedSkill, onSelectSkill, onOpenAbout }: S
       {/* All Skills - fixed right */}
       <button
         onClick={onOpenAbout}
-        className="relative z-10 ml-1 flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-chip-border bg-chip px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-accent"
+        className="relative z-50 ml-1 flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-chip-border bg-chip px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-accent"
+        style={{ pointerEvents: "auto" }}
       >
         <Info className="h-3.5 w-3.5" />
         All Skills
