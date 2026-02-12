@@ -95,42 +95,45 @@ export function ChatArea({
         )}
       </div>
 
-      {/* Bottom area: guidance card + skills panel + input */}
+      {/* Bottom area: pack header + guidance card + skills panel + input */}
       <div className="mx-auto w-full max-w-2xl px-4">
-        {/* Guidance Card (shown when a skill is selected) */}
-        {activeSkillData && skillsExpanded && (
-          <div className="mb-3">
-            <GuidanceCard skill={activeSkillData} />
-          </div>
-        )}
-
-        {/* Skills panel (only when expanded via double-click) */}
-        {skillsExpanded && activePack && (
+        {/* Pack header + skills when pack is selected */}
+        {selectedPackIndex !== null && activePack && (
           <div className="mb-2">
-            <SkillsBar
-              pack={activePack}
-              selectedSkill={selectedSkill}
-              onSelectSkill={onSelectSkill}
-              onOpenAbout={() => setAboutOpen(true)}
-            />
-          </div>
-        )}
-
-      {/* Pack header when pack selected but skills not expanded */}
-        {selectedPackIndex !== null && !skillsExpanded && (
-          <div className="mb-2 rounded-xl border border-border bg-card p-3">
-            <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <span>{activePack?.icon}</span>
-              <span>{activePack?.name}</span>
+            {/* Pack header */}
+            <div className="rounded-xl border border-border bg-card p-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <span>{activePack.icon}</span>
+                <span>{activePack.name}</span>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Got it. Pick a skill below or describe what you want to do.
+              </p>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Got it. Pick a skill below or describe what you want to do.
-            </p>
+
+            {/* Guidance Card (shown when a skill is selected) */}
+            {activeSkillData && (
+              <div className="mt-3">
+                <GuidanceCard skill={activeSkillData} />
+              </div>
+            )}
+
+            {/* Skills chips */}
+            {skillsExpanded && (
+              <div className="mt-3">
+                <SkillsBar
+                  pack={activePack}
+                  selectedSkill={selectedSkill}
+                  onSelectSkill={onSelectSkill}
+                  onOpenAbout={() => setAboutOpen(true)}
+                />
+              </div>
+            )}
           </div>
         )}
 
-        {/* When has messages but skills not expanded, show pack chips above input */}
-        {hasMessages && !skillsExpanded && selectedPackIndex === null && (
+        {/* When has messages and no pack selected, show pack chips */}
+        {hasMessages && selectedPackIndex === null && (
           <div className="mb-2">
             <PackChips
               onSelectPack={onSelectPack}

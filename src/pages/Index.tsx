@@ -52,22 +52,23 @@ const Index = () => {
     setInputDraft("");
   };
 
-  // Single click: select/deselect pack (no expand)
+  // Single click: select pack AND expand skills
   const handleSelectPack = (index: number) => {
-    updateSession((s) => ({
-      ...s,
-      selectedPackIndex: s.selectedPackIndex === index ? null : index,
-      selectedSkill: s.selectedPackIndex === index ? null : s.selectedSkill,
-      skillsExpanded: s.selectedPackIndex === index ? false : s.skillsExpanded,
-    }));
+    updateSession((s) => {
+      if (s.selectedPackIndex === index) {
+        // Clicking already-selected pack: deselect
+        return { ...s, selectedPackIndex: null, selectedSkill: null, skillsExpanded: false };
+      }
+      return { ...s, selectedPackIndex: index, skillsExpanded: true };
+    });
   };
 
-  // Double click: expand skills panel
+  // Double click: toggle expand/collapse
   const handleDoubleClickPack = (index: number) => {
     updateSession((s) => ({
       ...s,
       selectedPackIndex: index,
-      skillsExpanded: true,
+      skillsExpanded: !s.skillsExpanded,
     }));
   };
 
