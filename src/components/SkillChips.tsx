@@ -60,25 +60,27 @@ interface SkillsBarProps {
 
 export function SkillsBar({ pack, selectedSkill, onSelectSkill, onOpenAbout }: SkillsBarProps) {
   return (
-    <div className="flex items-start gap-2 pb-2">
-      <div className="flex flex-1 flex-wrap gap-1.5">
-        {pack.skills.map((s) => (
-          <button
-            key={s.skill}
-            onClick={() => onSelectSkill(s.skill)}
-            className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
-              selectedSkill === s.skill
-                ? "border-chip-active-border bg-chip-active text-chip-active-foreground"
-                : "border-chip-border bg-chip text-chip-foreground hover:border-primary/30 hover:bg-accent"
-            }`}
-          >
-            {s.skill.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
-          </button>
-        ))}
+    <div className="flex items-center gap-2">
+      <div className="flex-1 overflow-x-auto scrollbar-thin">
+        <div className="flex flex-wrap gap-1.5 max-h-[76px] overflow-y-hidden">
+          {pack.skills.map((s) => (
+            <button
+              key={s.skill}
+              onClick={() => onSelectSkill(s.skill)}
+              className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
+                selectedSkill === s.skill
+                  ? "border-chip-active-border bg-chip-active text-chip-active-foreground"
+                  : "border-chip-border bg-chip text-chip-foreground hover:border-primary/30 hover:bg-accent"
+              }`}
+            >
+              {s.skill.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+            </button>
+          ))}
+        </div>
       </div>
       <button
         onClick={onOpenAbout}
-        className="ml-1 flex shrink-0 items-center gap-1 rounded-full border border-chip-border bg-chip px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-accent"
+        className="relative z-10 ml-1 flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-chip-border bg-chip px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-accent"
       >
         <Info className="h-3.5 w-3.5" />
         All Skills
