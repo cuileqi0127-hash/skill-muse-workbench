@@ -11,5 +11,6 @@ export interface Session {
   messages: ChatMessage[];
   selectedPackIndex: number | null;
   selectedSkill: string | null;
+  skillsExpanded: boolean;
   createdAt: Date;
 }
