@@ -47,6 +47,30 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        chat: {
+          DEFAULT: "hsl(var(--chat-bg))",
+          "bubble-user": "hsl(var(--chat-bubble-user))",
+          "bubble-user-fg": "hsl(var(--chat-bubble-user-fg))",
+          "bubble-assistant": "hsl(var(--chat-bubble-assistant))",
+          "bubble-assistant-fg": "hsl(var(--chat-bubble-assistant-fg))",
+        },
+        chip: {
+          DEFAULT: "hsl(var(--chip))",
+          foreground: "hsl(var(--chip-foreground))",
+          border: "hsl(var(--chip-border))",
+          active: "hsl(var(--chip-active))",
+          "active-border": "hsl(var(--chip-active-border))",
+          "active-foreground": "hsl(var(--chip-active-foreground))",
+        },
+        files: {
+          DEFAULT: "hsl(var(--files-bg))",
+          header: "hsl(var(--files-header))",
+        },
+        toolbar: {
+          DEFAULT: "hsl(var(--toolbar-bg))",
+          foreground: "hsl(var(--toolbar-foreground))",
+          hover: "hsl(var(--toolbar-hover))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
