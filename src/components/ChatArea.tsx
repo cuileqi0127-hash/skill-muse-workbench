@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import { PackChips, SkillsBar } from "./SkillChips";
 import { SkillsModal } from "./SkillsModal";
+import { GuidanceCard } from "./GuidanceCard";
 import { skillPacks } from "@/data/skills";
+import type { Skill } from "@/data/skills";
 import type { ChatMessage } from "@/types/chat";
 
 interface ChatAreaProps {
@@ -10,8 +12,11 @@ interface ChatAreaProps {
   onSendMessage: (content: string) => void;
   selectedPackIndex: number | null;
   onSelectPack: (index: number) => void;
+  onDoubleClickPack: (index: number) => void;
   selectedSkill: string | null;
   onSelectSkill: (skill: string) => void;
+  skillsExpanded: boolean;
+  activeSkillData: Skill | null;
   inputDraft: string;
   onInputDraftChange: (draft: string) => void;
 }
@@ -21,20 +26,19 @@ export function ChatArea({
   onSendMessage,
   selectedPackIndex,
   onSelectPack,
+  onDoubleClickPack,
   selectedSkill,
   onSelectSkill,
+  skillsExpanded,
+  activeSkillData,
   inputDraft,
   onInputDraftChange,
 }: ChatAreaProps) {
   const [aboutOpen, setAboutOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = () => {
@@ -53,18 +57,23 @@ export function ChatArea({
 
   const hasMessages = messages.length > 0;
   const activePack = selectedPackIndex !== null ? skillPacks[selectedPackIndex] : null;
+  const showWelcome = !hasMessages;
 
   return (
     <div className="flex flex-1 flex-col bg-chat">
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
-        {!hasMessages && (
-          <div className="flex h-full flex-col items-center justify-end pb-4">
-            <PackChips onSelectPack={onSelectPack} selectedPackIndex={selectedPackIndex} />
+      {/* Messages or Welcome */}
+      <div className="flex flex-1 overflow-y-auto scrollbar-thin">
+        {showWelcome ? (
+          <div className="flex flex-1 items-center justify-center">
+            <PackChips
+              onSelectPack={onSelectPack}
+              onDoubleClickPack={onDoubleClickPack}
+              selectedPackIndex={selectedPackIndex}
+              onOpenAbout={() => setAboutOpen(true)}
+            />
           </div>
-        )}
-        {hasMessages && (
-          <div className="mx-auto max-w-2xl space-y-4 px-4 py-6">
+        ) : (
+          <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -86,18 +95,37 @@ export function ChatArea({
         )}
       </div>
 
-      {/* Skills bar */}
+      {/* Bottom area: guidance card + skills panel + input */}
       <div className="mx-auto w-full max-w-2xl px-4">
-        {hasMessages && !activePack && (
-          <PackChips onSelectPack={onSelectPack} selectedPackIndex={selectedPackIndex} />
+        {/* Guidance Card (shown when a skill is selected) */}
+        {activeSkillData && skillsExpanded && (
+          <div className="mb-3">
+            <GuidanceCard skill={activeSkillData} />
+          </div>
         )}
-        {activePack && (
-          <SkillsBar
-            pack={activePack}
-            selectedSkill={selectedSkill}
-            onSelectSkill={onSelectSkill}
-            onOpenAbout={() => setAboutOpen(true)}
-          />
+
+        {/* Skills panel (only when expanded via double-click) */}
+        {skillsExpanded && activePack && (
+          <div className="mb-2">
+            <SkillsBar
+              pack={activePack}
+              selectedSkill={selectedSkill}
+              onSelectSkill={onSelectSkill}
+              onOpenAbout={() => setAboutOpen(true)}
+            />
+          </div>
+        )}
+
+        {/* When has messages but skills not expanded, show pack chips above input */}
+        {hasMessages && !skillsExpanded && (
+          <div className="mb-2">
+            <PackChips
+              onSelectPack={onSelectPack}
+              onDoubleClickPack={onDoubleClickPack}
+              selectedPackIndex={selectedPackIndex}
+              onOpenAbout={() => setAboutOpen(true)}
+            />
+          </div>
         )}
       </div>
 

@@ -5,6 +5,7 @@ import { ChatArea } from "@/components/ChatArea";
 import { FilesPanel } from "@/components/FilesPanel";
 import { skillPacks } from "@/data/skills";
 import type { ChatMessage, Session } from "@/types/chat";
+import type { Skill } from "@/data/skills";
 
 function createId() {
   return Math.random().toString(36).slice(2, 10);
@@ -17,6 +18,7 @@ function createSession(): Session {
     messages: [],
     selectedPackIndex: null,
     selectedSkill: null,
+    skillsExpanded: false,
     createdAt: new Date(),
   };
 }
@@ -50,14 +52,26 @@ const Index = () => {
     setInputDraft("");
   };
 
+  // Single click: select/deselect pack (no expand)
   const handleSelectPack = (index: number) => {
     updateSession((s) => ({
       ...s,
       selectedPackIndex: s.selectedPackIndex === index ? null : index,
       selectedSkill: s.selectedPackIndex === index ? null : s.selectedSkill,
+      skillsExpanded: s.selectedPackIndex === index ? false : s.skillsExpanded,
     }));
   };
 
+  // Double click: expand skills panel
+  const handleDoubleClickPack = (index: number) => {
+    updateSession((s) => ({
+      ...s,
+      selectedPackIndex: index,
+      skillsExpanded: true,
+    }));
+  };
+
+  // Click skill: update guidance card + prefill draft (no chat message)
   const handleSelectSkill = (skill: string) => {
     const pack = currentSession.selectedPackIndex !== null
       ? skillPacks[currentSession.selectedPackIndex]
@@ -67,28 +81,20 @@ const Index = () => {
     const skillData = pack.skills.find((s) => s.skill === skill);
     if (!skillData) return;
 
-    // Insert assistant prompt message
-    const assistantMsg: ChatMessage = {
-      id: createId(),
-      role: "assistant",
-      content: skillData.prompt_message,
-      timestamp: new Date(),
-    };
-
-    updateSession((s) => {
-      const title = s.messages.length === 0
-        ? skillData.skill.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-        : s.title;
-      return {
-        ...s,
-        selectedSkill: skill,
-        messages: [...s.messages, assistantMsg],
-        title,
-      };
-    });
+    updateSession((s) => ({
+      ...s,
+      selectedSkill: skill,
+    }));
 
     setInputDraft(skillData.input_draft);
   };
+
+  // Get active skill data for guidance card
+  const activeSkillData: Skill | null = (() => {
+    if (!currentSession.selectedSkill || currentSession.selectedPackIndex === null) return null;
+    const pack = skillPacks[currentSession.selectedPackIndex];
+    return pack?.skills.find((s) => s.skill === currentSession.selectedSkill) ?? null;
+  })();
 
   const handleSendMessage = (content: string) => {
     const userMsg: ChatMessage = {
@@ -98,7 +104,6 @@ const Index = () => {
       timestamp: new Date(),
     };
 
-    // Mock assistant response
     const assistantMsg: ChatMessage = {
       id: createId(),
       role: "assistant",
@@ -129,20 +134,21 @@ const Index = () => {
         onSelectSession={handleSelectSession}
       />
 
-      {/* Main content area with left padding for toolbar */}
-      <div className="flex flex-1 pl-16">
+      <div className="flex flex-1 pl-14">
         <ChatArea
           messages={currentSession.messages}
           onSendMessage={handleSendMessage}
           selectedPackIndex={currentSession.selectedPackIndex}
           onSelectPack={handleSelectPack}
+          onDoubleClickPack={handleDoubleClickPack}
           selectedSkill={currentSession.selectedSkill}
           onSelectSkill={handleSelectSkill}
+          skillsExpanded={currentSession.skillsExpanded}
+          activeSkillData={activeSkillData}
           inputDraft={inputDraft}
           onInputDraftChange={setInputDraft}
         />
 
-        {/* Files panel - hidden on mobile */}
         <div className="hidden lg:block">
           <FilesPanel />
         </div>
