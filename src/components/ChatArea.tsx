@@ -95,13 +95,12 @@ export function ChatArea({
         )}
       </div>
 
-      {/* Bottom area: pack header + guidance card + skills panel + input */}
-      <div className="mx-auto w-full max-w-2xl px-4">
-        {/* Pack header + skills when pack is selected */}
-        {selectedPackIndex !== null && activePack && (
-          <div className="mb-2">
-            {/* Pack header */}
-            <div className="rounded-xl border border-border bg-card p-3">
+      {/* Composer area: pack header + skills + guidance + input */}
+      <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-2">
+        <div className="rounded-2xl border border-border bg-card shadow-sm">
+          {/* Pack header inside composer */}
+          {selectedPackIndex !== null && activePack && (
+            <div className="border-b border-border px-3 pt-3 pb-2">
               <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <span>{activePack.icon}</span>
                 <span>{activePack.name}</span>
@@ -110,59 +109,57 @@ export function ChatArea({
                 Got it. Pick a skill below or describe what you want to do.
               </p>
             </div>
+          )}
 
-            {/* Guidance Card (shown when a skill is selected) */}
-            {activeSkillData && (
-              <div className="mt-3">
-                <GuidanceCard skill={activeSkillData} />
-              </div>
-            )}
+          {/* Guidance Card */}
+          {selectedPackIndex !== null && activeSkillData && (
+            <div className="border-b border-border px-3 py-2.5">
+              <GuidanceCard skill={activeSkillData} />
+            </div>
+          )}
 
-            {/* Skills chips */}
-            {skillsExpanded && (
-              <div className="mt-3">
-                <SkillsBar
-                  pack={activePack}
-                  selectedSkill={selectedSkill}
-                  onSelectSkill={onSelectSkill}
-                  onOpenAbout={() => setAboutOpen(true)}
-                />
-              </div>
-            )}
-          </div>
-        )}
+          {/* Skills chips */}
+          {selectedPackIndex !== null && skillsExpanded && activePack && (
+            <div className="border-b border-border px-3 py-2.5">
+              <SkillsBar
+                pack={activePack}
+                selectedSkill={selectedSkill}
+                onSelectSkill={onSelectSkill}
+                onOpenAbout={() => setAboutOpen(true)}
+              />
+            </div>
+          )}
 
-        {/* When has messages and no pack selected, show pack chips */}
-        {hasMessages && selectedPackIndex === null && (
-          <div className="mb-2">
-            <PackChips
-              onSelectPack={onSelectPack}
-              onDoubleClickPack={onDoubleClickPack}
-              selectedPackIndex={selectedPackIndex}
-              onOpenAbout={() => setAboutOpen(true)}
+          {/* When has messages and no pack selected, show pack chips */}
+          {hasMessages && selectedPackIndex === null && (
+            <div className="border-b border-border px-3 py-2.5">
+              <PackChips
+                onSelectPack={onSelectPack}
+                onDoubleClickPack={onDoubleClickPack}
+                selectedPackIndex={selectedPackIndex}
+                onOpenAbout={() => setAboutOpen(true)}
+              />
+            </div>
+          )}
+
+          {/* Input row */}
+          <div className="flex items-end gap-2 p-2">
+            <textarea
+              value={inputDraft}
+              onChange={(e) => onInputDraftChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type a message..."
+              rows={1}
+              className="max-h-32 min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
+            <button
+              onClick={handleSend}
+              disabled={!inputDraft.trim()}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-opacity disabled:opacity-40"
+            >
+              <Send className="h-4 w-4" />
+            </button>
           </div>
-        )}
-      </div>
-
-      {/* Input */}
-      <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-2">
-        <div className="flex items-end gap-2 rounded-2xl border border-border bg-card p-2 shadow-sm">
-          <textarea
-            value={inputDraft}
-            onChange={(e) => onInputDraftChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type a message..."
-            rows={1}
-            className="max-h-32 min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-          />
-          <button
-            onClick={handleSend}
-            disabled={!inputDraft.trim()}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-opacity disabled:opacity-40"
-          >
-            <Send className="h-4 w-4" />
-          </button>
         </div>
       </div>
 
