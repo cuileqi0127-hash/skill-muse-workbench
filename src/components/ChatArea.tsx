@@ -57,7 +57,7 @@ export function ChatArea({
 
   const hasMessages = messages.length > 0;
   const activePack = selectedPackIndex !== null ? skillPacks[selectedPackIndex] : null;
-  const showWelcome = !hasMessages && selectedPackIndex === null;
+  const showWelcome = !hasMessages;
 
   // Header title & subtitle: skill overrides pack
   const headerTitle = activeSkillData
