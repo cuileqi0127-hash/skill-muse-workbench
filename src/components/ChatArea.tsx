@@ -116,8 +116,21 @@ export function ChatArea({
           </div>
         )}
 
+      {/* Pack header when pack selected but skills not expanded */}
+        {selectedPackIndex !== null && !skillsExpanded && (
+          <div className="mb-2 rounded-xl border border-border bg-card p-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <span>{activePack?.icon}</span>
+              <span>{activePack?.name}</span>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Got it. Pick a skill below or describe what you want to do.
+            </p>
+          </div>
+        )}
+
         {/* When has messages but skills not expanded, show pack chips above input */}
-        {hasMessages && !skillsExpanded && (
+        {hasMessages && !skillsExpanded && selectedPackIndex === null && (
           <div className="mb-2">
             <PackChips
               onSelectPack={onSelectPack}
