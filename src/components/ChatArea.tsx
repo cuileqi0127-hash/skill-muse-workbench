@@ -57,7 +57,16 @@ export function ChatArea({
 
   const hasMessages = messages.length > 0;
   const activePack = selectedPackIndex !== null ? skillPacks[selectedPackIndex] : null;
-  const showWelcome = !hasMessages;
+  const showWelcome = !hasMessages && selectedPackIndex === null;
+
+  // Header title & subtitle: skill overrides pack
+  const headerTitle = activeSkillData
+    ? activeSkillData.skill.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())
+    : activePack?.name ?? "";
+  const headerIcon = activeSkillData ? "🎯" : activePack?.icon ?? "";
+  const headerSubtitle = activeSkillData
+    ? activeSkillData.description.split(".")[0] + "."
+    : "Got it. Pick a skill below or describe what you want to do.";
 
   return (
     <div className="flex flex-1 flex-col bg-chat">
@@ -95,50 +104,43 @@ export function ChatArea({
         )}
       </div>
 
-      {/* Composer area: pack header + skills + guidance + input */}
-      <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-2">
+      {/* Skills chips strip above composer */}
+      {selectedPackIndex !== null && skillsExpanded && activePack && (
+        <div className="mx-auto w-full max-w-2xl px-4 pb-1.5">
+          <SkillsBar
+            pack={activePack}
+            selectedSkill={selectedSkill}
+            onSelectSkill={onSelectSkill}
+            onOpenAbout={() => setAboutOpen(true)}
+          />
+        </div>
+      )}
+
+      {/* When has messages and no pack selected, show pack chips above composer */}
+      {hasMessages && selectedPackIndex === null && (
+        <div className="mx-auto w-full max-w-2xl px-4 pb-1.5">
+          <PackChips
+            onSelectPack={onSelectPack}
+            onDoubleClickPack={onDoubleClickPack}
+            selectedPackIndex={selectedPackIndex}
+            onOpenAbout={() => setAboutOpen(true)}
+          />
+        </div>
+      )}
+
+      {/* Composer: header + input */}
+      <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-1">
         <div className="rounded-2xl border border-border bg-card shadow-sm">
-          {/* Pack header inside composer */}
-          {selectedPackIndex !== null && activePack && (
-            <div className="border-b border-border px-3 pt-3 pb-2">
-              <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <span>{activePack.icon}</span>
-                <span>{activePack.name}</span>
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Got it. Pick a skill below or describe what you want to do.
+          {/* Header inside composer (like Logo & Branding) */}
+          {selectedPackIndex !== null && (
+            <div className="px-3 pt-3 pb-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-foreground">
+                <span>{headerIcon}</span>
+                {headerTitle}
+              </span>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                {headerSubtitle}
               </p>
-            </div>
-          )}
-
-          {/* Guidance Card */}
-          {selectedPackIndex !== null && activeSkillData && (
-            <div className="border-b border-border px-3 py-2.5">
-              <GuidanceCard skill={activeSkillData} />
-            </div>
-          )}
-
-          {/* Skills chips */}
-          {selectedPackIndex !== null && skillsExpanded && activePack && (
-            <div className="border-b border-border px-3 py-2.5">
-              <SkillsBar
-                pack={activePack}
-                selectedSkill={selectedSkill}
-                onSelectSkill={onSelectSkill}
-                onOpenAbout={() => setAboutOpen(true)}
-              />
-            </div>
-          )}
-
-          {/* When has messages and no pack selected, show pack chips */}
-          {hasMessages && selectedPackIndex === null && (
-            <div className="border-b border-border px-3 py-2.5">
-              <PackChips
-                onSelectPack={onSelectPack}
-                onDoubleClickPack={onDoubleClickPack}
-                selectedPackIndex={selectedPackIndex}
-                onOpenAbout={() => setAboutOpen(true)}
-              />
             </div>
           )}
 
