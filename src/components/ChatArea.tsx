@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import { PackChips, SkillsBar } from "./SkillChips";
-import { SkillsModal } from "./SkillsModal";
 import { GuidanceCard } from "./GuidanceCard";
 import { skillPacks } from "@/data/skills";
 import type { Skill } from "@/data/skills";
@@ -34,7 +33,6 @@ export function ChatArea({
   inputDraft,
   onInputDraftChange,
 }: ChatAreaProps) {
-  const [aboutOpen, setAboutOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,27 +57,25 @@ export function ChatArea({
   const activePack = selectedPackIndex !== null ? skillPacks[selectedPackIndex] : null;
   const showWelcome = !hasMessages;
 
-  // Header title & subtitle: skill overrides pack
-  const headerTitle = activeSkillData
-    ? activeSkillData.skill.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())
-    : activePack?.name ?? "";
-  const headerIcon = activeSkillData ? "🎯" : activePack?.icon ?? "";
-  const headerSubtitle = activeSkillData
-    ? activeSkillData.description.split(".")[0] + "."
-    : "Got it. Pick a skill below or describe what you want to do.";
-
   return (
     <div className="flex flex-1 flex-col bg-chat">
       {/* Messages or Welcome */}
       <div className="flex flex-1 overflow-y-auto scrollbar-thin">
         {showWelcome ? (
-          <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-1 flex-col items-center justify-center gap-6">
+            {/* Pack chips - always centered */}
             <PackChips
               onSelectPack={onSelectPack}
               onDoubleClickPack={onDoubleClickPack}
               selectedPackIndex={selectedPackIndex}
-              onOpenAbout={() => setAboutOpen(true)}
             />
+
+            {/* Skill detail panel - appears in center area below pack chips */}
+            {activeSkillData && (
+              <div className="w-full max-w-2xl px-4">
+                <GuidanceCard skill={activeSkillData} />
+              </div>
+            )}
           </div>
         ) : (
           <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
@@ -111,7 +107,6 @@ export function ChatArea({
             pack={activePack}
             selectedSkill={selectedSkill}
             onSelectSkill={onSelectSkill}
-            onOpenAbout={() => setAboutOpen(true)}
           />
         </div>
       )}
@@ -123,27 +118,13 @@ export function ChatArea({
             onSelectPack={onSelectPack}
             onDoubleClickPack={onDoubleClickPack}
             selectedPackIndex={selectedPackIndex}
-            onOpenAbout={() => setAboutOpen(true)}
           />
         </div>
       )}
 
-      {/* Composer: header + input */}
+      {/* Composer: input only, no header */}
       <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-1">
         <div className="rounded-2xl border border-border bg-card shadow-sm">
-          {/* Header inside composer (like Logo & Branding) */}
-          {selectedPackIndex !== null && (
-            <div className="px-3 pt-3 pb-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-foreground">
-                <span>{headerIcon}</span>
-                {headerTitle}
-              </span>
-              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
-                {headerSubtitle}
-              </p>
-            </div>
-          )}
-
           {/* Input row */}
           <div className="flex items-end gap-2 p-2">
             <textarea
@@ -164,10 +145,6 @@ export function ChatArea({
           </div>
         </div>
       </div>
-
-      {activePack && (
-        <SkillsModal open={aboutOpen} onOpenChange={setAboutOpen} pack={activePack} />
-      )}
     </div>
   );
 }

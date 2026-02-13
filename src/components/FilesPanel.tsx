@@ -43,6 +43,7 @@ export function FilesPanel() {
               <FileText className="h-4 w-4 text-muted-foreground" />
             )}
             <span className="flex-1 truncate text-xs text-foreground">{file.name}</span>
+            <span className="shrink-0 text-[10px] text-muted-foreground">{file.modified}</span>
             <ChevronRight className="h-3 w-3 text-muted-foreground" />
           </button>
         ))}
