@@ -67,27 +67,29 @@ export function ChatArea({
   return (
     <div className="flex flex-1 flex-col bg-chat">
       {/* Messages or Welcome */}
-      <div className="flex flex-1 flex-col overflow-y-hidden">
+      <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto">
         {showWelcome ? (
-          <div className="flex flex-1 flex-col items-center pt-12 gap-4 overflow-hidden">
-            {/* Pack chips - always at top */}
+          <div className="flex flex-col items-center justify-center w-full gap-6 py-8">
+            {/* Pack chips */}
             <PackChips
               onSelectPack={onSelectPack}
               onDoubleClickPack={onDoubleClickPack}
               selectedPackIndex={selectedPackIndex}
             />
 
-            {/* Skills list panel - center area, scrollable */}
+            {/* Skills list panel - compact fixed height card */}
             {activePack && skillsExpanded && (
-              <div className="w-full max-w-2xl flex-1 min-h-0 px-4 pb-2">
-                <div className="h-full overflow-y-auto rounded-xl border border-border bg-card scrollbar-thin">
-                  {activePack.skills.map((s) => {
+              <div className="w-full max-w-2xl px-4 flex-shrink-0">
+                <div className="max-h-80 overflow-y-auto rounded-xl border border-border bg-card scrollbar-thin">
+                  {activePack.skills.map((s, idx) => {
                     const isActive = selectedSkill === s.skill;
                     return (
                       <button
                         key={s.skill}
                         onClick={() => onSelectSkill(s.skill)}
-                        className={`flex w-full flex-col gap-1.5 border-b border-border px-5 py-3.5 text-left transition-colors ${
+                        className={`flex w-full flex-col gap-0.5 px-4 py-2 text-left transition-colors ${
+                          idx < activePack.skills.length - 1 ? "border-b border-border" : ""
+                        } ${
                           isActive
                             ? "bg-chip-active/30 border-l-2 border-l-primary"
                             : "hover:bg-muted"
@@ -100,7 +102,7 @@ export function ChatArea({
                         >
                           {formatSkillName(s.skill)}
                         </span>
-                        <span className="text-xs leading-relaxed text-muted-foreground">
+                        <span className="text-xs leading-snug text-muted-foreground line-clamp-2">
                           {s.description}
                         </span>
                       </button>
@@ -135,8 +137,8 @@ export function ChatArea({
         )}
       </div>
 
-      {/* Skills chips strip above composer */}
-      {selectedPackIndex !== null && skillsExpanded && activePack && (
+      {/* Skills chips strip above composer - only show when has messages */}
+      {!showWelcome && selectedPackIndex !== null && skillsExpanded && activePack && (
         <div className="mx-auto w-full max-w-2xl px-4 pb-1.5">
           <SkillsBar
             pack={activePack}
