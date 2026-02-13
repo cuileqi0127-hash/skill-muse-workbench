@@ -73,12 +73,22 @@ const Index = () => {
     }));
   };
 
-  // Click skill: update guidance card + prefill draft (no chat message)
+  // Click skill: toggle select/deselect (no chat message)
   const handleSelectSkill = (skill: string) => {
     const pack = currentSession.selectedPackIndex !== null
       ? skillPacks[currentSession.selectedPackIndex]
       : null;
     if (!pack) return;
+
+    // Toggle: if clicking same skill, deselect it
+    if (currentSession.selectedSkill === skill) {
+      updateSession((s) => ({
+        ...s,
+        selectedSkill: null,
+      }));
+      setInputDraft("");
+      return;
+    }
 
     const skillData = pack.skills.find((s) => s.skill === skill);
     if (!skillData) return;

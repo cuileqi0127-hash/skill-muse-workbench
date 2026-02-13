@@ -87,12 +87,12 @@ export function ChatArea({
                       <button
                         key={s.skill}
                         onClick={() => onSelectSkill(s.skill)}
-                        className={`flex w-full flex-col gap-0.5 px-4 py-2 text-left transition-colors ${
-                          idx < activePack.skills.length - 1 ? "border-b border-border" : ""
+                        className={`flex w-full flex-col gap-1 px-4 py-3 text-left transition-colors ${
+                          idx < activePack.skills.length - 1 ? "border-b border-border/40" : ""
                         } ${
                           isActive
-                            ? "bg-chip-active/30 border-l-2 border-l-primary"
-                            : "hover:bg-muted"
+                            ? "bg-primary/8 border-l-2 border-l-primary"
+                            : "hover:bg-muted/40"
                         }`}
                       >
                         <span
