@@ -80,38 +80,38 @@ export function ChatArea({
             {/* Skills list panel - compact fixed height card */}
             {activePack && skillsExpanded && (
               <div className="w-full max-w-2xl px-4 flex-shrink-0">
-                <div className="max-h-80 overflow-y-auto rounded-xl border border-border bg-card scrollbar-thin">
-                  <div className="sticky top-0 z-10 flex items-center justify-between bg-card px-4 py-2.5 border-b border-border">
-                    <span className="text-sm font-semibold text-foreground">Available Skills</span>
+                <div className="max-h-[400px] overflow-y-auto rounded-2xl bg-card shadow-[0_2px_16px_-4px_hsl(var(--foreground)/0.08)] scrollbar-thin">
+                  <div className="sticky top-0 z-10 flex items-center justify-between bg-card px-5 py-3.5 border-b border-border/30 rounded-t-2xl">
+                    <span className="text-[15px] font-semibold text-foreground">Available Skills</span>
                     <span className="text-xs text-muted-foreground">{activePack.skills.length} skills</span>
                   </div>
-                  {activePack.skills.map((s, idx) => {
-                    const isActive = selectedSkill === s.skill;
-                    return (
-                      <button
-                        key={s.skill}
-                        onClick={() => onSelectSkill(s.skill)}
-                        className={`flex w-full flex-col gap-1 px-4 py-3 text-left transition-colors ${
-                          idx < activePack.skills.length - 1 ? "border-b border-border/40" : ""
-                        } ${
-                          isActive
-                            ? "bg-primary/8 border-l-2 border-l-primary"
-                            : "hover:bg-muted/40"
-                        }`}
-                      >
-                        <span
-                          className={`text-sm font-semibold ${
-                            isActive ? "text-primary" : "text-foreground"
+                  <div className="flex flex-col gap-1 p-2">
+                    {activePack.skills.map((s) => {
+                      const isActive = selectedSkill === s.skill;
+                      return (
+                        <button
+                          key={s.skill}
+                          onClick={() => onSelectSkill(s.skill)}
+                          className={`flex w-full flex-col gap-1.5 rounded-xl px-4 py-3 text-left transition-all duration-150 ${
+                            isActive
+                              ? "bg-accent border-l-[3px] border-l-primary shadow-sm"
+                              : "hover:bg-muted/50 border-l-[3px] border-l-transparent"
                           }`}
                         >
-                          {formatSkillName(s.skill)}
-                        </span>
-                        <span className="text-xs leading-snug text-muted-foreground line-clamp-2">
-                          {s.description}
-                        </span>
-                      </button>
-                    );
-                  })}
+                          <span
+                            className={`text-[15px] font-semibold leading-snug ${
+                              isActive ? "text-primary" : "text-foreground"
+                            }`}
+                          >
+                            {formatSkillName(s.skill)}
+                          </span>
+                          <span className="text-[13px] leading-relaxed text-muted-foreground line-clamp-2">
+                            {s.description}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}
