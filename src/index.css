@@ -15,8 +15,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 14%;
 
-    --primary: 217 91% 60%;
+    --primary: 220 70% 50%;
     --primary-foreground: 0 0% 100%;
+    --primary-soft: 220 60% 94%;
 
     --secondary: 220 14% 92%;
     --secondary-foreground: 220 20% 25%;
@@ -24,30 +25,30 @@
     --muted: 220 14% 94%;
     --muted-foreground: 220 10% 46%;
 
-    --accent: 217 91% 95%;
-    --accent-foreground: 217 91% 40%;
+    --accent: 220 60% 95%;
+    --accent-foreground: 220 50% 35%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 13% 90%;
     --input: 220 13% 90%;
-    --ring: 217 91% 60%;
+    --ring: 220 70% 50%;
 
     --radius: 0.75rem;
 
     --chat-bg: 0 0% 100%;
-    --chat-bubble-user: 217 91% 60%;
-    --chat-bubble-user-fg: 0 0% 100%;
+    --chat-bubble-user: 220 60% 94%;
+    --chat-bubble-user-fg: 220 50% 25%;
     --chat-bubble-assistant: 220 14% 96%;
     --chat-bubble-assistant-fg: 220 20% 14%;
 
     --chip: 0 0% 100%;
     --chip-foreground: 220 20% 25%;
     --chip-border: 220 13% 88%;
-    --chip-active: 217 91% 95%;
-    --chip-active-border: 217 91% 70%;
-    --chip-active-foreground: 217 91% 35%;
+    --chip-active: 220 60% 94%;
+    --chip-active-border: 220 70% 60%;
+    --chip-active-foreground: 220 50% 30%;
 
     --files-bg: 0 0% 100%;
     --files-header: 220 14% 96%;
@@ -73,30 +74,30 @@
     --card-foreground: 220 14% 90%;
     --popover: 220 20% 12%;
     --popover-foreground: 220 14% 90%;
-    --primary: 217 91% 60%;
+    --primary: 220 70% 55%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 20% 16%;
     --secondary-foreground: 220 14% 80%;
     --muted: 220 20% 16%;
     --muted-foreground: 220 10% 55%;
-    --accent: 217 40% 20%;
-    --accent-foreground: 217 91% 70%;
+    --accent: 220 30% 22%;
+    --accent-foreground: 220 60% 70%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 220 20% 20%;
     --input: 220 20% 20%;
-    --ring: 217 91% 60%;
+    --ring: 220 70% 55%;
     --chat-bg: 220 20% 10%;
-    --chat-bubble-user: 217 91% 50%;
-    --chat-bubble-user-fg: 0 0% 100%;
+    --chat-bubble-user: 220 40% 22%;
+    --chat-bubble-user-fg: 220 30% 85%;
     --chat-bubble-assistant: 220 20% 16%;
     --chat-bubble-assistant-fg: 220 14% 90%;
     --chip: 220 20% 16%;
     --chip-foreground: 220 14% 80%;
     --chip-border: 220 20% 24%;
-    --chip-active: 217 40% 20%;
-    --chip-active-border: 217 91% 50%;
-    --chip-active-foreground: 217 91% 70%;
+    --chip-active: 220 30% 22%;
+    --chip-active-border: 220 70% 50%;
+    --chip-active-foreground: 220 60% 70%;
     --files-bg: 220 20% 10%;
     --files-header: 220 20% 14%;
     --toolbar-bg: 220 20% 12%;
