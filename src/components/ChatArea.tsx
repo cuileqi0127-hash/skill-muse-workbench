@@ -17,6 +17,10 @@ interface ChatAreaProps {
   onInputDraftChange: (draft: string) => void;
 }
 
+function formatSkillName(skill: string) {
+  return skill.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export function ChatArea({
   messages,
   onSendMessage,
@@ -53,37 +57,80 @@ export function ChatArea({
   const activePack = selectedPackIndex !== null ? skillPacks[selectedPackIndex] : null;
   const showWelcome = !hasMessages;
 
+  // Composer badge label
+  const composerBadge = (() => {
+    if (selectedSkill) return formatSkillName(selectedSkill);
+    if (activePack) return `${activePack.icon} ${activePack.name}`;
+    return null;
+  })();
+
   return (
     <div className="flex flex-1 flex-col bg-chat">
       {/* Messages or Welcome */}
-      <div className="flex flex-1 overflow-y-auto scrollbar-thin">
+      <div className="flex flex-1 flex-col overflow-y-hidden">
         {showWelcome ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-6">
+          <div className="flex flex-1 flex-col items-center pt-12 gap-4 overflow-hidden">
+            {/* Pack chips - always at top */}
             <PackChips
               onSelectPack={onSelectPack}
               onDoubleClickPack={onDoubleClickPack}
               selectedPackIndex={selectedPackIndex}
             />
-          </div>
-        ) : (
-          <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
-                    msg.role === "user"
-                      ? "bg-chat-bubble-user text-chat-bubble-user-fg"
-                      : "bg-chat-bubble-assistant text-chat-bubble-assistant-fg"
-                  }`}
-                >
-                  {msg.content}
+
+            {/* Skills list panel - center area, scrollable */}
+            {activePack && skillsExpanded && (
+              <div className="w-full max-w-2xl flex-1 min-h-0 px-4 pb-2">
+                <div className="h-full overflow-y-auto rounded-xl border border-border bg-card scrollbar-thin">
+                  {activePack.skills.map((s) => {
+                    const isActive = selectedSkill === s.skill;
+                    return (
+                      <button
+                        key={s.skill}
+                        onClick={() => onSelectSkill(s.skill)}
+                        className={`flex w-full flex-col gap-1.5 border-b border-border px-5 py-3.5 text-left transition-colors ${
+                          isActive
+                            ? "bg-chip-active/30 border-l-2 border-l-primary"
+                            : "hover:bg-muted"
+                        }`}
+                      >
+                        <span
+                          className={`text-sm font-semibold ${
+                            isActive ? "text-primary" : "text-foreground"
+                          }`}
+                        >
+                          {formatSkillName(s.skill)}
+                        </span>
+                        <span className="text-xs leading-relaxed text-muted-foreground">
+                          {s.description}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
+            )}
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto scrollbar-thin">
+            <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                      msg.role === "user"
+                        ? "bg-chat-bubble-user text-chat-bubble-user-fg"
+                        : "bg-chat-bubble-assistant text-chat-bubble-assistant-fg"
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
         )}
       </div>
@@ -113,6 +160,15 @@ export function ChatArea({
       {/* Composer */}
       <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-1">
         <div className="rounded-2xl border border-border bg-card shadow-sm">
+          {/* Skill badge */}
+          {composerBadge && (
+            <div className="px-3 pt-2">
+              <span className="inline-flex items-center gap-1 rounded-full border border-chip-active-border bg-chip-active px-2.5 py-0.5 text-[11px] font-medium text-chip-active-foreground">
+                {composerBadge}
+              </span>
+            </div>
+          )}
+          {/* Input row */}
           <div className="flex items-end gap-2 p-2">
             <textarea
               value={inputDraft}
