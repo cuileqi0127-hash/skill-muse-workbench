@@ -1,50 +1,32 @@
 import { useState, useRef, useCallback } from "react";
 import { skillPacks, type SkillPack } from "@/data/skills";
-import { Info, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PackChipsProps {
   onSelectPack: (index: number) => void;
   onDoubleClickPack: (index: number) => void;
   selectedPackIndex: number | null;
-  onOpenAbout: () => void;
 }
 
-export function PackChips({ onSelectPack, onDoubleClickPack, selectedPackIndex, onOpenAbout }: PackChipsProps) {
-  const [hoveredPack, setHoveredPack] = useState<number | null>(null);
-
+export function PackChips({ onSelectPack, onDoubleClickPack, selectedPackIndex }: PackChipsProps) {
   return (
     <div className="flex flex-col items-center gap-3">
       <p className="text-sm font-medium text-muted-foreground">Try these Skills</p>
       <div className="flex flex-col items-center gap-2.5">
         {skillPacks.map((pack, i) => (
-          <div
+          <button
             key={pack.name}
-            className="relative flex flex-col items-center"
-            onMouseEnter={() => setHoveredPack(i)}
-            onMouseLeave={() => setHoveredPack(null)}
+            onClick={() => onSelectPack(i)}
+            onDoubleClick={() => onDoubleClickPack(i)}
+            className={`inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-all ${
+              selectedPackIndex === i
+                ? "border-chip-active-border bg-chip-active text-chip-active-foreground shadow-sm"
+                : "border-chip-border bg-chip text-chip-foreground hover:border-primary/30 hover:bg-accent"
+            }`}
           >
-            <button
-              onClick={() => onSelectPack(i)}
-              onDoubleClick={() => onDoubleClickPack(i)}
-              className={`inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-all ${
-                selectedPackIndex === i
-                  ? "border-chip-active-border bg-chip-active text-chip-active-foreground shadow-sm"
-                  : "border-chip-border bg-chip text-chip-foreground hover:border-primary/30 hover:bg-accent"
-              }`}
-            >
-              <span>{pack.icon}</span>
-              <span>{pack.name}</span>
-            </button>
-            {hoveredPack === i && (
-              <button
-                onClick={(e) => { e.stopPropagation(); onOpenAbout(); }}
-                className="mt-3 inline-flex items-center gap-1 rounded-full border border-chip-border bg-chip px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-accent animate-in fade-in-0 zoom-in-95 duration-150"
-              >
-                <Info className="h-3.5 w-3.5" />
-                All Skills
-              </button>
-            )}
-          </div>
+            <span>{pack.icon}</span>
+            <span>{pack.name}</span>
+          </button>
         ))}
       </div>
     </div>
@@ -55,10 +37,9 @@ interface SkillsBarProps {
   pack: SkillPack;
   selectedSkill: string | null;
   onSelectSkill: (skill: string) => void;
-  onOpenAbout: () => void;
 }
 
-export function SkillsBar({ pack, selectedSkill, onSelectSkill, onOpenAbout }: SkillsBarProps) {
+export function SkillsBar({ pack, selectedSkill, onSelectSkill }: SkillsBarProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -78,7 +59,6 @@ export function SkillsBar({ pack, selectedSkill, onSelectSkill, onOpenAbout }: S
 
   return (
     <div className="flex items-center gap-1.5">
-      {/* Left arrow */}
       {canScrollLeft && (
         <button
           onClick={() => scroll("left")}
@@ -88,7 +68,6 @@ export function SkillsBar({ pack, selectedSkill, onSelectSkill, onOpenAbout }: S
         </button>
       )}
 
-      {/* Scrollable chips */}
       <div
         ref={scrollRef}
         onScroll={updateArrows}
@@ -111,7 +90,6 @@ export function SkillsBar({ pack, selectedSkill, onSelectSkill, onOpenAbout }: S
         ))}
       </div>
 
-      {/* Right arrow */}
       {canScrollRight && (
         <button
           onClick={() => scroll("right")}
@@ -120,16 +98,6 @@ export function SkillsBar({ pack, selectedSkill, onSelectSkill, onOpenAbout }: S
           <ChevronRight className="h-3.5 w-3.5" />
         </button>
       )}
-
-      {/* All Skills - fixed right */}
-      <button
-        onClick={onOpenAbout}
-        className="relative z-50 ml-1 flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-chip-border bg-chip px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-accent"
-        style={{ pointerEvents: "auto" }}
-      >
-        <Info className="h-3.5 w-3.5" />
-        All Skills
-      </button>
     </div>
   );
 }
