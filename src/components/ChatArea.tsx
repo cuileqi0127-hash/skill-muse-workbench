@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import { PackChips, SkillsBar } from "./SkillChips";
-import { GuidanceCard } from "./GuidanceCard";
 import { skillPacks } from "@/data/skills";
-import type { Skill } from "@/data/skills";
 import type { ChatMessage } from "@/types/chat";
 
 interface ChatAreaProps {
@@ -15,7 +13,6 @@ interface ChatAreaProps {
   selectedSkill: string | null;
   onSelectSkill: (skill: string) => void;
   skillsExpanded: boolean;
-  activeSkillData: Skill | null;
   inputDraft: string;
   onInputDraftChange: (draft: string) => void;
 }
@@ -29,7 +26,6 @@ export function ChatArea({
   selectedSkill,
   onSelectSkill,
   skillsExpanded,
-  activeSkillData,
   inputDraft,
   onInputDraftChange,
 }: ChatAreaProps) {
@@ -63,19 +59,11 @@ export function ChatArea({
       <div className="flex flex-1 overflow-y-auto scrollbar-thin">
         {showWelcome ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-6">
-            {/* Pack chips - always centered */}
             <PackChips
               onSelectPack={onSelectPack}
               onDoubleClickPack={onDoubleClickPack}
               selectedPackIndex={selectedPackIndex}
             />
-
-            {/* Skill detail panel - appears in center area below pack chips */}
-            {activeSkillData && (
-              <div className="w-full max-w-2xl px-4">
-                <GuidanceCard skill={activeSkillData} />
-              </div>
-            )}
           </div>
         ) : (
           <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
@@ -122,10 +110,9 @@ export function ChatArea({
         </div>
       )}
 
-      {/* Composer: input only, no header */}
+      {/* Composer */}
       <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-1">
         <div className="rounded-2xl border border-border bg-card shadow-sm">
-          {/* Input row */}
           <div className="flex items-end gap-2 p-2">
             <textarea
               value={inputDraft}

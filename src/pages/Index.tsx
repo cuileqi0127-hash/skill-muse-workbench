@@ -3,6 +3,7 @@ import { FloatingToolbar } from "@/components/FloatingToolbar";
 import { HistoryDrawer } from "@/components/HistoryDrawer";
 import { ChatArea } from "@/components/ChatArea";
 import { FilesPanel } from "@/components/FilesPanel";
+import { SkillsPanel } from "@/components/SkillsPanel";
 import { skillPacks } from "@/data/skills";
 import type { ChatMessage, Session } from "@/types/chat";
 import type { Skill } from "@/data/skills";
@@ -90,12 +91,9 @@ const Index = () => {
     setInputDraft(skillData.input_draft);
   };
 
-  // Get active skill data for guidance card
-  const activeSkillData: Skill | null = (() => {
-    if (!currentSession.selectedSkill || currentSession.selectedPackIndex === null) return null;
-    const pack = skillPacks[currentSession.selectedPackIndex];
-    return pack?.skills.find((s) => s.skill === currentSession.selectedSkill) ?? null;
-  })();
+  const activePack = currentSession.selectedPackIndex !== null
+    ? skillPacks[currentSession.selectedPackIndex]
+    : null;
 
   const handleSendMessage = (content: string) => {
     const userMsg: ChatMessage = {
@@ -145,13 +143,20 @@ const Index = () => {
           selectedSkill={currentSession.selectedSkill}
           onSelectSkill={handleSelectSkill}
           skillsExpanded={currentSession.skillsExpanded}
-          activeSkillData={activeSkillData}
           inputDraft={inputDraft}
           onInputDraftChange={setInputDraft}
         />
 
         <div className="hidden lg:block">
-          <FilesPanel />
+          {activePack ? (
+            <SkillsPanel
+              pack={activePack}
+              selectedSkill={currentSession.selectedSkill}
+              onSelectSkill={handleSelectSkill}
+            />
+          ) : (
+            <FilesPanel />
+          )}
         </div>
       </div>
     </div>
