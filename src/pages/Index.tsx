@@ -148,15 +148,7 @@ const Index = () => {
         />
 
         <div className="hidden lg:block">
-          {activePack ? (
-            <SkillsPanel
-              pack={activePack}
-              selectedSkill={currentSession.selectedSkill}
-              onSelectSkill={handleSelectSkill}
-            />
-          ) : (
-            <FilesPanel />
-          )}
+          <FilesPanel />
         </div>
       </div>
     </div>
