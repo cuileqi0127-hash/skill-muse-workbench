@@ -4,7 +4,7 @@ import { HistoryDrawer } from "@/components/HistoryDrawer";
 import { ChatArea } from "@/components/ChatArea";
 import { FilesPanel } from "@/components/FilesPanel";
 import { FileEditor } from "@/components/FileEditor";
-import { UserBadge } from "@/components/UserBadge";
+// UserBadge is now integrated into FilesPanel
 import { useAuth } from "@/contexts/AuthContext";
 import { LoginModal } from "@/components/LoginModal";
 import { skillPacks } from "@/data/skills";
@@ -138,7 +138,7 @@ const Index = () => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
-      <UserBadge />
+      {/* UserBadge moved into FilesPanel */}
 
       <FloatingToolbar
         onNewSession={handleNewSession}
