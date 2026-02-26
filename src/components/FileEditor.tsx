@@ -27,7 +27,7 @@ export function FileEditor({ fileName, initialContent, onClose, onSave }: FileEd
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-foreground">{fileName}</span>
           {saved && (
-            <span className="text-xs text-green-600">已保存</span>
+            <span className="text-xs text-green-600">Saved</span>
           )}
         </div>
         <div className="flex items-center gap-1.5">
@@ -37,7 +37,7 @@ export function FileEditor({ fileName, initialContent, onClose, onSave }: FileEd
               className="flex items-center gap-1.5 rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
             >
               <Edit3 className="h-3.5 w-3.5" />
-              编辑
+              Edit
             </button>
           ) : (
             <button
@@ -45,7 +45,7 @@ export function FileEditor({ fileName, initialContent, onClose, onSave }: FileEd
               className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               <Save className="h-3.5 w-3.5" />
-              保存
+              Save
             </button>
           )}
           <button

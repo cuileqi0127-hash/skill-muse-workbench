@@ -71,10 +71,6 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
           >
             Login
           </button>
-
-          <p className="text-center text-xs text-muted-foreground">
-            Demo mode — any non-empty credentials will work.
-          </p>
         </form>
       </DialogContent>
     </Dialog>
