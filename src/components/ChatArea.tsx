@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { Send, ImagePlus, Bot } from "lucide-react";
+import { Send, ImagePlus, Bot, ChevronDown } from "lucide-react";
 import { PackChips, SkillsBar } from "./SkillChips";
 import { skillPacks } from "@/data/skills";
 import type { ChatMessage } from "@/types/chat";
@@ -22,10 +22,38 @@ function formatSkillName(skill: string) {
 }
 
 function ModelSelector() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   return (
-    <div className="flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-2.5 text-muted-foreground">
-      <Bot className="h-4 w-4" />
-      <span className="text-xs font-medium">Claude Opus 4</span>
+    <div ref={ref} className="relative shrink-0">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex h-8 items-center gap-1.5 rounded-lg px-3 text-muted-foreground transition-colors hover:bg-muted/50 focus:outline-none focus:ring-1 focus:ring-border"
+      >
+        <Bot className="h-4 w-4" />
+        <span className="text-xs font-medium text-foreground">Claude Opus 4</span>
+        <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute bottom-full left-0 mb-1 min-w-[170px] rounded-lg border border-border/60 bg-background p-1 shadow-sm z-50">
+          <button
+            onClick={() => setOpen(false)}
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-foreground bg-muted/40"
+          >
+            <Bot className="h-3.5 w-3.5 text-muted-foreground" />
+            Claude Opus 4
+          </button>
+        </div>
+      )}
     </div>
   );
 }
