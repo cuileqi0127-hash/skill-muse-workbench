@@ -1,5 +1,5 @@
-import { useRef, useEffect } from "react";
-import { Send, ImagePlus, Bot } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
+import { Send, ImagePlus, Bot, ChevronDown } from "lucide-react";
 import { PackChips, SkillsBar } from "./SkillChips";
 import { skillPacks } from "@/data/skills";
 import type { ChatMessage } from "@/types/chat";
@@ -19,6 +19,55 @@ interface ChatAreaProps {
 
 function formatSkillName(skill: string) {
   return skill.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+const AI_MODELS = [
+  { id: "claude-sonnet-4-5", label: "Claude Sonnet 4.5" },
+  { id: "claude-opus-4", label: "Claude Opus 4" },
+];
+
+function ModelSelector() {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(AI_MODELS[0]);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative shrink-0">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex h-9 items-center gap-1.5 rounded-xl px-2.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+        title="Select AI Model"
+      >
+        <Bot className="h-4 w-4" />
+        <span className="text-xs font-medium max-w-[100px] truncate">{selected.label}</span>
+        <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute bottom-full left-0 mb-1 min-w-[180px] rounded-xl border border-border bg-card p-1 shadow-lg z-50">
+          {AI_MODELS.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => { setSelected(m); setOpen(false); }}
+              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs transition-colors ${
+                selected.id === m.id ? "bg-accent text-accent-foreground font-medium" : "text-foreground hover:bg-muted/50"
+              }`}
+            >
+              <Bot className="h-3.5 w-3.5" />
+              {m.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function ChatArea({
@@ -61,7 +110,7 @@ export function ChatArea({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      onSendMessage(`[📎 已上传图片: ${file.name}]`);
+      onSendMessage(`[📎 Uploaded image: ${file.name}]`);
     }
     e.target.value = "";
   };
@@ -188,19 +237,14 @@ export function ChatArea({
             </div>
           )}
           <div className="flex items-end gap-1.5 p-2">
-            {/* AI Agent button */}
-            <button
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-              title="AI Agent"
-            >
-              <Bot className="h-4 w-4" />
-            </button>
+            {/* AI Agent model selector */}
+            <ModelSelector />
 
             <textarea
               value={inputDraft}
               onChange={(e) => onInputDraftChange(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="输入消息..."
+              placeholder="Type a message..."
               rows={1}
               className="max-h-32 min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
@@ -218,7 +262,7 @@ export function ChatArea({
             <button
               onClick={handleImageUpload}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-              title="上传图片"
+              title="Upload image"
             >
               <ImagePlus className="h-4 w-4" />
             </button>

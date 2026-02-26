@@ -9,7 +9,7 @@ export function UserBadge() {
 
   return (
     <>
-      <div className="fixed right-4 top-4 z-40 flex items-center gap-2.5">
+      <div className="fixed right-4 top-3 z-50 flex items-center gap-2.5" style={{ right: "calc(18rem + 1.5rem)" }}>
         {isLoggedIn ? (
           <>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-4 py-1.5 text-sm font-medium text-accent-foreground transition-colors">
