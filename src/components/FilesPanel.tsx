@@ -37,7 +37,7 @@ export function FilesPanel({ onOpenFile }: FilesPanelProps) {
   return (
     <div className="flex h-full w-72 flex-col border-l border-border bg-background pt-[41px]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <h2 className="text-sm font-semibold text-foreground">Files</h2>
         <button
           onClick={() => setCreatingFolder(true)}
