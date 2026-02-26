@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { Send } from "lucide-react";
+import { useRef, useEffect } from "react";
+import { Send, ImagePlus, Bot } from "lucide-react";
 import { PackChips, SkillsBar } from "./SkillChips";
 import { skillPacks } from "@/data/skills";
 import type { ChatMessage } from "@/types/chat";
@@ -34,6 +34,7 @@ export function ChatArea({
   onInputDraftChange,
 }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,11 +54,22 @@ export function ChatArea({
     }
   };
 
+  const handleImageUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onSendMessage(`[📎 已上传图片: ${file.name}]`);
+    }
+    e.target.value = "";
+  };
+
   const hasMessages = messages.length > 0;
   const activePack = selectedPackIndex !== null ? skillPacks[selectedPackIndex] : null;
   const showWelcome = !hasMessages;
 
-  // Composer badge label
   const composerBadge = (() => {
     if (selectedSkill) return formatSkillName(selectedSkill);
     if (activePack) return `${activePack.icon} ${activePack.name}`;
@@ -65,19 +77,17 @@ export function ChatArea({
   })();
 
   return (
-    <div className="flex flex-1 flex-col bg-chat">
+    <div className="flex flex-1 flex-col bg-background">
       {/* Messages or Welcome */}
       <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto">
         {showWelcome ? (
           <div className="flex flex-col items-center justify-center w-full gap-6 py-8">
-            {/* Pack chips */}
             <PackChips
               onSelectPack={onSelectPack}
               onDoubleClickPack={onDoubleClickPack}
               selectedPackIndex={selectedPackIndex}
             />
 
-            {/* Skills list panel - compact fixed height card */}
             {activePack && skillsExpanded && (
               <div className="w-full max-w-2xl px-4 flex-shrink-0">
                 <div className="max-h-[400px] overflow-y-auto rounded-2xl bg-card shadow-[0_2px_16px_-4px_hsl(var(--foreground)/0.08)] scrollbar-thin">
@@ -117,13 +127,18 @@ export function ChatArea({
             )}
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto scrollbar-thin">
+          <div className="flex-1 overflow-y-auto scrollbar-thin w-full">
             <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
+                  {msg.role === "assistant" && (
+                    <div className="mr-2 mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent">
+                      <Bot className="h-4 w-4 text-accent-foreground" />
+                    </div>
+                  )}
                   <div
                     className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                       msg.role === "user"
@@ -141,7 +156,7 @@ export function ChatArea({
         )}
       </div>
 
-      {/* Skills chips strip above composer - only show when has messages */}
+      {/* Skills chips strip above composer */}
       {!showWelcome && selectedPackIndex !== null && skillsExpanded && activePack && (
         <div className="mx-auto w-full max-w-2xl px-4 pb-1.5">
           <SkillsBar
@@ -152,7 +167,6 @@ export function ChatArea({
         </div>
       )}
 
-      {/* When has messages and no pack selected, show pack chips above composer */}
       {hasMessages && selectedPackIndex === null && (
         <div className="mx-auto w-full max-w-2xl px-4 pb-1.5">
           <PackChips
@@ -166,7 +180,6 @@ export function ChatArea({
       {/* Composer */}
       <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-1">
         <div className="rounded-2xl border border-border bg-card shadow-sm">
-          {/* Skill badge */}
           {composerBadge && (
             <div className="px-3 pt-2">
               <span className="inline-flex items-center gap-1 rounded-full border border-chip-active-border bg-chip-active px-2.5 py-0.5 text-[11px] font-medium text-chip-active-foreground">
@@ -174,16 +187,43 @@ export function ChatArea({
               </span>
             </div>
           )}
-          {/* Input row */}
-          <div className="flex items-end gap-2 p-2">
+          <div className="flex items-end gap-1.5 p-2">
+            {/* AI Agent button */}
+            <button
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              title="AI Agent"
+            >
+              <Bot className="h-4 w-4" />
+            </button>
+
             <textarea
               value={inputDraft}
               onChange={(e) => onInputDraftChange(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type a message..."
+              placeholder="输入消息..."
               rows={1}
               className="max-h-32 min-h-[40px] flex-1 resize-none bg-transparent px-2 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
+
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+
+            {/* Image upload button */}
+            <button
+              onClick={handleImageUpload}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              title="上传图片"
+            >
+              <ImagePlus className="h-4 w-4" />
+            </button>
+
+            {/* Send button */}
             <button
               onClick={handleSend}
               disabled={!inputDraft.trim()}
