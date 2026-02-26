@@ -21,9 +21,9 @@ export function FileEditor({ fileName, initialContent, onClose, onSave }: FileEd
   };
 
   return (
-    <div className="flex flex-1 flex-col bg-card">
+    <div className="flex flex-1 flex-col bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border px-5 py-3">
+      <div className="flex items-center justify-between border-b border-border/40 px-5 py-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-foreground">{fileName}</span>
           {saved && (
@@ -63,11 +63,11 @@ export function FileEditor({ fileName, initialContent, onClose, onSave }: FileEd
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="h-full w-full resize-none rounded-xl border border-border bg-muted p-4 font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="h-full w-full resize-none rounded-lg border border-border/40 bg-muted/30 p-4 font-mono text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
             style={{ minHeight: "300px" }}
           />
         ) : (
-          <pre className="whitespace-pre-wrap rounded-xl bg-muted p-4 font-mono text-sm leading-relaxed text-foreground">
+          <pre className="whitespace-pre-wrap rounded-lg bg-muted/30 p-4 font-mono text-sm leading-relaxed text-foreground">
             {content}
           </pre>
         )}
