@@ -9,7 +9,7 @@ export function UserBadge() {
 
   return (
     <>
-      <div className="fixed right-0 top-0 z-50 flex w-72 items-center justify-end gap-2.5 border-b border-l border-border bg-muted px-4 py-2">
+      <div className="fixed right-0 top-0 z-50 flex w-72 items-center justify-end gap-2.5 border-b border-border bg-background px-4 py-2">
         {isLoggedIn ? (
           <>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground transition-colors">
