@@ -1,25 +1,42 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { LogOut } from "lucide-react";
+import { LogOut, LogIn } from "lucide-react";
+import { useState } from "react";
+import { LoginModal } from "@/components/LoginModal";
 
 export function UserBadge() {
   const { isLoggedIn, username, logout } = useAuth();
-
-  if (!isLoggedIn) return null;
+  const [loginOpen, setLoginOpen] = useState(false);
 
   return (
-    <div className="fixed right-4 top-4 z-40 flex items-center gap-2.5">
-      <span className="inline-flex items-center gap-2 rounded-full border border-chip-active-border bg-chip-active px-4 py-1.5 text-sm font-medium text-chip-active-foreground">
-        <span className="h-2 w-2 rounded-full bg-green-500" />
-        已登录
-      </span>
-      <span className="text-sm text-muted-foreground">{username}</span>
-      <button
-        onClick={logout}
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        title="退出登录"
-      >
-        <LogOut className="h-4 w-4" />
-      </button>
-    </div>
+    <>
+      <div className="fixed right-4 top-4 z-40 flex items-center gap-2.5">
+        {isLoggedIn ? (
+          <>
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-accent px-4 py-1.5 text-sm font-medium text-accent-foreground transition-colors">
+              <span className="h-2 w-2 rounded-full bg-primary" />
+              Logged In
+            </span>
+            <span className="text-sm text-muted-foreground">{username}</span>
+            <button
+              onClick={logout}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              title="Logout"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setLoginOpen(true)}
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <LogIn className="h-4 w-4" />
+            Login
+          </button>
+        )}
+      </div>
+
+      <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
+    </>
   );
 }
