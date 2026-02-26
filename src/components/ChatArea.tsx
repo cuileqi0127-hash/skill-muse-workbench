@@ -236,10 +236,10 @@ export function ChatArea({
               </span>
             </div>
           )}
-          <div className="flex items-end gap-1.5 p-2">
-            {/* AI Agent model selector */}
+          <div className="px-3 pt-2 pb-0.5">
             <ModelSelector />
-
+          </div>
+          <div className="flex items-end gap-1.5 p-2 pt-0">
             <textarea
               value={inputDraft}
               onChange={(e) => onInputDraftChange(e.target.value)}
