@@ -229,15 +229,13 @@ export function ChatArea({
       {/* Composer */}
       <div className="mx-auto w-full max-w-2xl px-4 pb-4 pt-1">
         <div className="rounded-2xl border border-border bg-card shadow-sm">
-          {composerBadge && (
-            <div className="px-3 pt-2">
+          <div className="flex items-center gap-2 px-3 pt-2 pb-0.5">
+            <ModelSelector />
+            {composerBadge && (
               <span className="inline-flex items-center gap-1 rounded-full border border-chip-active-border bg-chip-active px-2.5 py-0.5 text-[11px] font-medium text-chip-active-foreground">
                 {composerBadge}
               </span>
-            </div>
-          )}
-          <div className="px-3 pt-2 pb-0.5">
-            <ModelSelector />
+            )}
           </div>
           <div className="flex items-end gap-1.5 p-2 pt-0">
             <textarea
