@@ -5,8 +5,8 @@ import { ChatArea } from "@/components/ChatArea";
 import { FilesPanel } from "@/components/FilesPanel";
 import { FileEditor } from "@/components/FileEditor";
 import { UserBadge } from "@/components/UserBadge";
-import { LoginPage } from "@/components/LoginPage";
 import { useAuth } from "@/contexts/AuthContext";
+import { LoginModal } from "@/components/LoginModal";
 import { skillPacks } from "@/data/skills";
 import type { ChatMessage, Session } from "@/types/chat";
 
@@ -40,8 +40,15 @@ const Index = () => {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [inputDraft, setInputDraft] = useState("");
   const [openFile, setOpenFile] = useState<{ name: string; content: string } | null>(null);
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
-  if (!isLoggedIn) return <LoginPage />;
+  const requireAuth = (action: () => void) => {
+    if (!isLoggedIn) {
+      setLoginPromptOpen(true);
+      return;
+    }
+    action();
+  };
 
   const currentSession = sessions.find((s) => s.id === currentSessionId)!;
 
@@ -100,29 +107,33 @@ const Index = () => {
   };
 
   const handleSendMessage = (content: string) => {
-    const userMsg: ChatMessage = {
-      id: createId(),
-      role: "user",
-      content,
-      timestamp: new Date(),
-    };
-    const assistantMsg: ChatMessage = {
-      id: createId(),
-      role: "assistant",
-      content: "Thanks for the details! Let me analyze this and put together a comprehensive plan for you. I'll break it down into actionable steps.",
-      timestamp: new Date(),
-    };
-    updateSession((s) => {
-      const title = s.messages.length === 0
-        ? content.slice(0, 40) + (content.length > 40 ? "..." : "")
-        : s.title;
-      return { ...s, messages: [...s.messages, userMsg, assistantMsg], title };
+    requireAuth(() => {
+      const userMsg: ChatMessage = {
+        id: createId(),
+        role: "user",
+        content,
+        timestamp: new Date(),
+      };
+      const assistantMsg: ChatMessage = {
+        id: createId(),
+        role: "assistant",
+        content: "Thanks for the details! Let me analyze this and put together a comprehensive plan for you. I'll break it down into actionable steps.",
+        timestamp: new Date(),
+      };
+      updateSession((s) => {
+        const title = s.messages.length === 0
+          ? content.slice(0, 40) + (content.length > 40 ? "..." : "")
+          : s.title;
+        return { ...s, messages: [...s.messages, userMsg, assistantMsg], title };
+      });
     });
   };
 
   const handleOpenFile = (file: { name: string; type: string }) => {
-    const content = fileContents[file.name] || `// ${file.name}\n// 文件内容为空`;
-    setOpenFile({ name: file.name, content });
+    requireAuth(() => {
+      const content = fileContents[file.name] || `// ${file.name}\n// 文件内容为空`;
+      setOpenFile({ name: file.name, content });
+    });
   };
 
   return (
@@ -171,6 +182,8 @@ const Index = () => {
           <FilesPanel onOpenFile={handleOpenFile} />
         </div>
       </div>
+
+      <LoginModal open={loginPromptOpen} onOpenChange={setLoginPromptOpen} />
     </div>
   );
 };
